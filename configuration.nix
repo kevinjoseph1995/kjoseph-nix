@@ -154,6 +154,12 @@
     ];
     packages = with pkgs; [
       vscode
+      google-chrome
+      ghostty
+      htop
+      fish
+      ripgrep
+      helix
     ];
     shell = pkgs.fish;
   };
@@ -177,19 +183,9 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    google-chrome
-    helix
-    ghostty
     nixfmt-rfc-style
     home-manager
-    fish
     git
-    htop
-    ripgrep
-    gcc
-    cmake
-    cargo
-    rustc
   ];
 
   virtualisation.docker = {

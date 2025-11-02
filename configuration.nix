@@ -150,6 +150,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
     packages = with pkgs; [
       vscode
@@ -185,7 +186,13 @@
     git
     htop
     ripgrep
+    gcc
+    cmake
   ];
+
+  virtualisation.docker = {
+    enable = true;
+  };
 
   # ===== SERVICES =====
   services.openssh.enable = true; # Enable the OpenSSH daemon.

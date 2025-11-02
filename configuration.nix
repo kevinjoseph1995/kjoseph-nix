@@ -188,6 +188,8 @@
     ripgrep
     gcc
     cmake
+    cargo
+    rustc
   ];
 
   virtualisation.docker = {

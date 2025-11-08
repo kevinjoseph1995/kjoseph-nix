@@ -160,6 +160,7 @@
       fish
       ripgrep
       helix
+      wget
     ];
     shell = pkgs.fish;
   };

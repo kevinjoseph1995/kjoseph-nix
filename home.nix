@@ -63,6 +63,14 @@
           };
         };
       };
+      editor = {
+        cursor-shape = {
+          insert = "bar";
+          normal = "block";
+          select = "underline";
+        };
+        auto-format = true;
+      };
       theme = "gruvbox";
     };
     # Language-specific configuration.
@@ -95,6 +103,13 @@
         name = "Kevin Joseph";
         email = "kevinjoseph1995@gmail.com";
       };
+    };
+  };
+
+  programs.zellij = {
+    enable = true;
+    settings = {
+      default_shell = "fish";
     };
   };
 }

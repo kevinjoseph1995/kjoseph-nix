@@ -161,6 +161,8 @@
       ripgrep
       helix
       wget
+      nil
+      zellij
     ];
     shell = pkgs.fish;
   };

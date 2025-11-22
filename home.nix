@@ -26,6 +26,7 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
+    pkgs.grc
   ];
 
   # ===== FILES (DOTFILES) =====
@@ -70,6 +71,7 @@
           select = "underline";
         };
         auto-format = true;
+        scroll-lines = 1;
       };
       theme = "gruvbox";
     };
@@ -87,11 +89,18 @@
 
   programs.fish = {
     enable = true;
+    plugins = [
+      {
+        name = "gruvbox";
+        src = pkgs.fishPlugins.gruvbox.src;
+      }
+    ];
     shellAliases = {
       gs = "git status";
       gpl = "git pull";
       grep = "rg";
     };
+    shellInit = '''';
   };
 
   programs.fzf.enable = true;

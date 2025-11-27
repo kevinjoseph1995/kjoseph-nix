@@ -101,6 +101,43 @@
       grep = "rg";
     };
     shellInit = '''';
+    interactiveShellInit = ''
+      function fish_jj_prompt
+          # If jj isn't installed, there's nothing we can do
+          # Return 1 so the calling prompt can deal with it
+          if not command -sq jj
+              return 1
+          end
+          set -l info "$(
+              jj log 2>/dev/null --no-graph --ignore-working-copy --color=always --revisions @ \
+                  --template '
+                      separate(" ",
+                          if(conflict, label("conflict", "×")),
+                      )
+                  '
+          )"
+          or return 1
+          if test -n "$info"
+              printf ' %s' $info
+          end
+      end
+
+      function fish_vcs_prompt --description 'Print all vcs prompts'
+        fish_jj_prompt $argv
+        or fish_git_prompt $argv
+      end
+
+      function fish_prompt
+        # Show the current path and any detected VCS state
+        set -l last_status $status
+        set_color $fish_color_cwd
+        printf '%s' (prompt_pwd)
+        set_color normal
+        fish_vcs_prompt
+        printf ' > '
+        return $last_status
+      end
+    '';
   };
 
   programs.fzf.enable = true;

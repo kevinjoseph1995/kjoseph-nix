@@ -163,6 +163,7 @@
       wget
       nil
       zellij
+      jj
     ];
     shell = pkgs.fish;
   };

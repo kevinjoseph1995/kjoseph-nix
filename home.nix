@@ -37,6 +37,13 @@
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
     # '';
+    ".config/jj/config.toml".text = ''
+      [user]
+      name = "Kevin Joseph"
+      email = "kevinjoseph1995@gmail.com"
+      [ui]
+      color = "always"
+    '';
   };
 
   # ===== ENVIRONMENT VARIABLES =====

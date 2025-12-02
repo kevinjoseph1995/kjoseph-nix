@@ -163,7 +163,7 @@
       wget
       nil
       zellij
-      jj
+      jujutsu # Source control management tool
     ];
     shell = pkgs.fish;
   };

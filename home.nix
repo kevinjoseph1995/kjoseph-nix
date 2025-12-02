@@ -165,4 +165,11 @@
       default_shell = "fish";
     };
   };
+
+  programs.ghostty = {
+    enable = true;
+    settings = {
+      shell-integration-features = "ssh-terminfo,ssh-env";
+    };
+  };
 }

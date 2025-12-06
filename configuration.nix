@@ -33,7 +33,7 @@
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
     # Open ports in the firewall.
-    # firewall.allowedTCPPorts = [ ... ];
+    firewall.allowedTCPPorts = [ 22 ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
@@ -166,6 +166,11 @@
       jujutsu # Source control management tool
     ];
     shell = pkgs.fish;
+    openssh = {
+      authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGkl8n+Yhe6S/N0k8SKPY1bOqlIf1kG6M0NuQri5EuFw"
+      ];
+    };
   };
 
   # ===== PROGRAMS =====
@@ -174,10 +179,10 @@
     # Some programs need SUID wrappers, can be configured further or are
     # started in user sessions.
     # mtr.enable = true;
-    # gnupg.agent = {
-    #   enable = true;
-    #   enableSSHSupport = true;
-    # };
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
   };
 
   # ===== ENVIRONMENT & PACKAGES =====
@@ -198,7 +203,21 @@
   };
 
   # ===== SERVICES =====
-  services.openssh.enable = true; # Enable the OpenSSH daemon.
+  services.openssh = {
+    enable = true; # Enable the OpenSSH daemon.
+    ports = [ 22 ];
+    settings = {
+      PasswordAuthentication = false;
+      AllowUsers = [
+        "kevin"
+        "root"
+      ];
+      UseDns = true;
+      X11Forwarding = false;
+      PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
+    };
+  };
+  services.fail2ban.enable = true;
   services.printing.enable = true; # Enable CUPS to print documents.
 
   # ===== NIX CONFIGURATION =====

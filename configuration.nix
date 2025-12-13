@@ -153,7 +153,6 @@
       "docker"
     ];
     packages = with pkgs; [
-      vscode
       google-chrome
       ghostty
       htop

@@ -18,6 +18,9 @@
   # without reading the release notes.
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
+  # Allow specific unfree packages for Home Manager builds (needed for VS Code).
+  nixpkgs.config.allowUnfree = true;
+
   # ===== PACKAGES =====
   # Install user-scoped packages here.
   home.packages = [
@@ -170,6 +173,29 @@
     enable = true;
     settings = {
       shell-integration-features = "ssh-terminfo,ssh-env";
+    };
+  };
+
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscode;
+    profiles.default.userSettings = {
+      "workbench.colorTheme" = "Default Light Modern";
+      "editor.formatOnSave" = true;
+      "github.copilot.enable" = {
+        "*" = true;
+        "plaintext" = false;
+        "markdown" = true;
+        "scminput" = false;
+      };
+      "github.copilot.nextEditSuggestions.enabled" = false;
+      "terminal.integrated.profiles.linux" = {
+        "fish" = {
+          "path" = "fish";
+          "args" = [ ];
+        };
+      };
+      "terminal.integrated.defaultProfile.linux" = "fish";
     };
   };
 }

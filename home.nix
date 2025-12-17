@@ -196,6 +196,14 @@
         };
       };
       "terminal.integrated.defaultProfile.linux" = "fish";
+      "[cpp]" = {
+        "editor.defaultFormatter" = "llvm-vs-code-extensions.vscode-clangd";
+      };
     };
+    extensions = with pkgs.vscode-extensions; [
+      eamodio.gitlens
+      github.copilot
+      llvm-vs-code-extensions.vscode-clangd
+    ];
   };
 }

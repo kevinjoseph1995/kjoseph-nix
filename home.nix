@@ -91,7 +91,7 @@
         {
           name = "nix";
           auto-format = true;
-          formatter.command = lib.getExe pkgs.nixfmt-rfc-style;
+          formatter.command = lib.getExe pkgs.nixfmt;
         }
       ];
     };
@@ -179,31 +179,36 @@
   programs.vscode = {
     enable = true;
     package = pkgs.vscode;
-    profiles.default.userSettings = {
-      "workbench.colorTheme" = "Default Light Modern";
-      "editor.formatOnSave" = true;
-      "github.copilot.enable" = {
-        "*" = true;
-        "plaintext" = false;
-        "markdown" = true;
-        "scminput" = false;
-      };
-      "github.copilot.nextEditSuggestions.enabled" = false;
-      "terminal.integrated.profiles.linux" = {
-        "fish" = {
-          "path" = "fish";
-          "args" = [ ];
+    profiles.default = {
+      userSettings = {
+        "workbench.colorTheme" = "Default Light Modern";
+        "editor.formatOnSave" = true;
+        "github.copilot.enable" = {
+          "*" = true;
+          "plaintext" = false;
+          "markdown" = true;
+          "scminput" = false;
+        };
+        "github.copilot.nextEditSuggestions.enabled" = false;
+        "terminal.integrated.profiles.linux" = {
+          "fish" = {
+            "path" = "fish";
+            "args" = [ ];
+          };
+        };
+        "terminal.integrated.defaultProfile.linux" = "fish";
+        "[cpp]" = {
+          "editor.defaultFormatter" = "llvm-vs-code-extensions.vscode-clangd";
         };
       };
-      "terminal.integrated.defaultProfile.linux" = "fish";
-      "[cpp]" = {
-        "editor.defaultFormatter" = "llvm-vs-code-extensions.vscode-clangd";
-      };
+      extensions = with pkgs.vscode-extensions; [
+        eamodio.gitlens
+        github.copilot
+        llvm-vs-code-extensions.vscode-clangd
+      ];
     };
-    extensions = with pkgs.vscode-extensions; [
-      eamodio.gitlens
-      github.copilot
-      llvm-vs-code-extensions.vscode-clangd
-    ];
+  };
+  programs.claude-code = {
+    enable = true;
   };
 }

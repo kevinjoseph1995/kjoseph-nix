@@ -30,6 +30,8 @@
     #   echo "Hello, ${config.home.username}!"
     # '')
     pkgs.grc
+    pkgs.rust-analyzer
+    pkgs.rustfmt
   ];
 
   # ===== FILES (DOTFILES) =====
@@ -93,7 +95,23 @@
           auto-format = true;
           formatter.command = lib.getExe pkgs.nixfmt;
         }
+        {
+          name = "rust";
+          auto-format = true;
+        }
       ];
+      language-server.rust-analyzer.config = {
+        inlayHints = {
+          bindingModeHints.enable = false;
+          closingBraceHints.minLines = 10;
+          closureReturnTypeHints.enable = "with_block";
+          discriminantHints.enable = "fieldless";
+          lifetimeElisionHints.enable = "skip_trivial";
+          typeHints.enable = true;
+          parameterHints.enable = true;
+          reborrowHints.enable = "mutable";
+        };
+      };
     };
   };
 
@@ -110,7 +128,7 @@
       gpl = "git pull";
       grep = "rg";
     };
-    shellInit = '''';
+    shellInit = "";
     interactiveShellInit = ''
       function fish_jj_prompt
           # If jj isn't installed, there's nothing we can do
@@ -205,9 +223,11 @@
         eamodio.gitlens
         github.copilot
         llvm-vs-code-extensions.vscode-clangd
+        anthropic.claude-code
       ];
     };
   };
+
   programs.claude-code = {
     enable = true;
   };

@@ -4,46 +4,62 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repository contains a NixOS system configuration using Nix Flakes and Home Manager. It manages both system-level configuration (configuration.nix) and user-level configuration (home.nix) for a single user named "kevin" on an AMD-based system with NVIDIA GPU running NixOS 25.05.
+This repository contains a NixOS system configuration using Nix Flakes and Home Manager. It manages both system-level configuration and user-level configuration for a single user named "kevin" across multiple machines (desktop and laptop) running NixOS 25.05.
 
 ## Architecture
 
-### Flake Structure (flake.nix:12-28)
+### Flake Structure (flake.nix)
 - Entry point is `flake.nix` which defines inputs (nixpkgs unstable, home-manager) and outputs
-- System target: `nixosConfigurations.nixos` for x86_64-linux
+- Two system targets: `nixosConfigurations.desktop` and `nixosConfigurations.laptop` for x86_64-linux
 - Allows unfree packages globally
 - Home Manager is integrated as a NixOS module, not standalone
 
-### Configuration Files
-- **flake.nix**: Flake definition with inputs and outputs
-- **configuration.nix**: System-wide NixOS configuration (boot, networking, graphics, services, users)
-- **home.nix**: User-specific Home Manager configuration (dotfiles, programs, packages)
-- **hardware-configuration.nix**: Auto-generated hardware config (DO NOT MODIFY - see hardware-configuration.nix:1-2)
+### Directory Layout
+```
+.
+├── flake.nix              # Flake definition with inputs and outputs
+├── common/
+│   ├── configuration.nix  # Shared system config (boot, networking, audio, services, users)
+│   └── home.nix           # User-specific Home Manager config (dotfiles, programs, packages)
+├── hosts/
+│   ├── desktop/
+│   │   ├── default.nix              # Desktop-specific config (NVIDIA GPU)
+│   │   └── hardware-configuration.nix  # Auto-generated (DO NOT MODIFY)
+│   └── laptop/
+│       ├── default.nix              # Laptop-specific config
+│       └── hardware-configuration.nix  # Auto-generated (DO NOT MODIFY)
+```
 
-### Key System Components (configuration.nix)
-- Desktop: KDE Plasma 6 with SDDM display manager (configuration.nix:107-113)
-- Graphics: NVIDIA drivers with open-source kernel module (configuration.nix:66-93)
-- Audio: PipeWire (replaces PulseAudio) (configuration.nix:118-129)
-- Security: SSH with key-based auth only, fail2ban enabled (configuration.nix:205-219)
-- Virtualization: Docker enabled (configuration.nix:200-202)
-- Shell: Fish shell as default for user kevin (configuration.nix:167)
+### Host-Specific Configuration
+- **Desktop** (hosts/desktop/default.nix): AMD CPU, NVIDIA GPU with open-source kernel module
+- **Laptop** (hosts/laptop/default.nix): Intel CPU, no discrete GPU
 
-### User Configuration (home.nix)
-- Editor: Helix (hx) configured as default with nixfmt formatter for Nix files (home.nix:62-98)
-- VCS: Both Git and Jujutsu (jj) configured with custom Fish prompt integration (home.nix:115-138)
-- Terminal: Ghostty terminal emulator (home.nix:172-177)
-- Multiplexer: Zellij with Fish as default shell (home.nix:165-170)
-- VSCode: Managed via Home Manager with Copilot, GitLens, and clangd extensions (home.nix:179-210)
+### Shared System Components (common/configuration.nix)
+- Desktop: KDE Plasma 6 with SDDM display manager
+- Audio: PipeWire (replaces PulseAudio)
+- Security: SSH with key-based auth only, fail2ban enabled
+- Virtualization: Docker enabled
+- Shell: Fish shell as default for user kevin
+
+### User Configuration (common/home.nix)
+- Editor: Helix (hx) configured as default with nixfmt formatter for Nix files
+- VCS: Both Git and Jujutsu (jj) configured with custom Fish prompt integration
+- Terminal: Ghostty terminal emulator
+- Multiplexer: Zellij with Fish as default shell
+- VSCode: Managed via Home Manager with Copilot, GitLens, and clangd extensions
 
 ## Common Commands
 
 ### Building and Applying Configuration
 ```bash
-# Rebuild entire NixOS system (requires sudo)
-sudo nixos-rebuild switch --flake .#nixos
+# Rebuild desktop system (requires sudo)
+sudo nixos-rebuild switch --flake .#desktop
+
+# Rebuild laptop system (requires sudo)
+sudo nixos-rebuild switch --flake .#laptop
 
 # Build without switching (test configuration)
-sudo nixos-rebuild build --flake .#nixos
+sudo nixos-rebuild build --flake .#desktop
 
 # Apply only Home Manager changes (no sudo needed)
 home-manager switch --flake .#kevin
@@ -52,10 +68,10 @@ home-manager switch --flake .#kevin
 ### Formatting
 ```bash
 # Format all Nix files in repository
-nixfmt *.nix
+nixfmt flake.nix common/*.nix hosts/**/*.nix
 
 # Format a specific file
-nixfmt configuration.nix
+nixfmt common/configuration.nix
 ```
 
 ### Updating Dependencies
@@ -76,26 +92,30 @@ nix flake check
 nix flake show
 
 # Evaluate configuration without building
-nixos-rebuild dry-build --flake .#nixos
+nixos-rebuild dry-build --flake .#desktop
+nixos-rebuild dry-build --flake .#laptop
 ```
 
 ## Development Notes
 
 ### Adding System Packages
-Add to `environment.systemPackages` in configuration.nix:193-198 for system-wide packages accessible to all users.
+Add to `environment.systemPackages` in common/configuration.nix for system-wide packages accessible to all users on all hosts.
 
 ### Adding User Packages
-- For declarative packages: Add to `home.packages` in home.nix:26-33
-- For user-installed packages (via nix profile): Add to `users.users.kevin.packages` in configuration.nix:155-166
+- For declarative packages: Add to `home.packages` in common/home.nix
+- For user-installed packages (via nix profile): Add to `users.users.kevin.packages` in common/configuration.nix
+
+### Adding Host-Specific Configuration
+Put host-specific settings in the appropriate `hosts/<host>/default.nix` file. For example, GPU drivers, power management, or hardware-specific services.
 
 ### Adding Services
-System services go in configuration.nix under appropriate sections (marked with ===== SERVICES ===== at configuration.nix:204).
+System services shared across all hosts go in common/configuration.nix under the SERVICES section. Host-specific services go in the host's `default.nix`.
 
 ### Modifying Program Configuration
-Most program configurations for user kevin are managed in home.nix under the `programs.*` attribute set (home.nix:58-213). This includes shell configs, editor settings, Git config, etc.
+Most program configurations for user kevin are managed in common/home.nix under the `programs.*` attribute set. This includes shell configs, editor settings, Git config, etc.
 
 ### Experimental Features
-Flakes and nix-command are enabled system-wide (configuration.nix:223-226). All nix commands can use flake syntax.
+Flakes and nix-command are enabled system-wide (common/configuration.nix). All nix commands can use flake syntax.
 
 ### Home Manager Integration
-Home Manager is integrated as a NixOS module (configuration.nix:18,238-243), not run standalone. Changes to home.nix require `sudo nixos-rebuild switch` or can be applied separately with `home-manager switch`.
+Home Manager is integrated as a NixOS module (common/configuration.nix), not run standalone. Changes to home.nix require `sudo nixos-rebuild switch` or can be applied separately with `home-manager switch`.

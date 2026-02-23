@@ -21,9 +21,13 @@
       };
     in
     {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs system; };
-        modules = [ ./configuration.nix ];
+        modules = [ ./hosts/desktop ];
+      };
+      nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs system; };
+        modules = [ ./hosts/laptop ];
       };
     };
 }

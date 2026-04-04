@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 
@@ -20,6 +21,7 @@
 
   # Allow specific unfree packages for Home Manager builds (needed for VS Code).
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [ inputs.claude-code-nix.overlays.default ];
 
   # ===== PACKAGES =====
   # Install user-scoped packages here.
@@ -32,6 +34,7 @@
     pkgs.grc
     pkgs.rust-analyzer
     pkgs.rustfmt
+    pkgs.claude-code
   ];
 
   # ===== FILES (DOTFILES) =====
@@ -228,7 +231,4 @@
     };
   };
 
-  programs.claude-code = {
-    enable = true;
-  };
 }

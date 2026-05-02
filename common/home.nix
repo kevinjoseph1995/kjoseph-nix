@@ -199,7 +199,7 @@
 
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode;
+    package = pkgs.vscode.fhs;
     profiles.default = {
       userSettings = {
         "workbench.colorTheme" = "Default Light Modern";
@@ -226,7 +226,15 @@
         eamodio.gitlens
         github.copilot
         llvm-vs-code-extensions.vscode-clangd
-        anthropic.claude-code
+        # TODO: replace with anthropic.claude-code once nixpkgs fixes the hash for 2.1.92
+        (pkgs.vscode-utils.buildVscodeMarketplaceExtension {
+          mktplcRef = {
+            name = "claude-code";
+            publisher = "anthropic";
+            version = "2.1.92";
+            sha256 = "sha256-f+6xXZVb5sYrmrH7eoon6/QoQaTnBuTnb+YnvszqyKA=";
+          };
+        })
       ];
     };
   };

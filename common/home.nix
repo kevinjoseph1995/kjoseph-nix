@@ -105,7 +105,7 @@
       ];
       language-server.rust-analyzer.config = {
         inlayHints = {
-          bindingModeHints.enable = false;
+          bindingModeHints.enable = true;
           closingBraceHints.minLines = 10;
           closureReturnTypeHints.enable = "with_block";
           discriminantHints.enable = "fieldless";
@@ -205,10 +205,7 @@
         "workbench.colorTheme" = "Default Light Modern";
         "editor.formatOnSave" = true;
         "github.copilot.enable" = {
-          "*" = true;
-          "plaintext" = false;
-          "markdown" = true;
-          "scminput" = false;
+          "*" = false;
         };
         "github.copilot.nextEditSuggestions.enabled" = false;
         "terminal.integrated.profiles.linux" = {
@@ -226,15 +223,6 @@
         eamodio.gitlens
         github.copilot
         llvm-vs-code-extensions.vscode-clangd
-        # TODO: replace with anthropic.claude-code once nixpkgs fixes the hash for 2.1.92
-        (pkgs.vscode-utils.buildVscodeMarketplaceExtension {
-          mktplcRef = {
-            name = "claude-code";
-            publisher = "anthropic";
-            version = "2.1.92";
-            sha256 = "sha256-f+6xXZVb5sYrmrH7eoon6/QoQaTnBuTnb+YnvszqyKA=";
-          };
-        })
       ];
     };
   };

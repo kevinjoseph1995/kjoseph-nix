@@ -31,7 +31,7 @@
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
     # Open ports in the firewall.
-    firewall.allowedTCPPorts = [ 22 ];
+    firewall.allowedTCPPorts = [ 1025 ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
@@ -171,7 +171,7 @@
   # ===== SERVICES =====
   services.openssh = {
     enable = true; # Enable the OpenSSH daemon.
-    ports = [ 22 ];
+    ports = [ 1025 ];
     settings = {
       PasswordAuthentication = false;
       AllowUsers = [

@@ -174,15 +174,21 @@
     ports = [ 1025 ];
     settings = {
       PasswordAuthentication = false;
-      AllowUsers = [
-        "kevin"
-        "root"
-      ];
-      UseDns = true;
+      AllowUsers = [ "kevin" ];
+      UseDns = false;
       X11Forwarding = false;
-      PermitRootLogin = "prohibit-password"; # "yes", "without-password", "prohibit-password", "forced-commands-only", "no"
+      PermitRootLogin = "no";
       AcceptEnv = [ "COLORTERM" ];
+      LoginGraceTime = 30;
+      MaxAuthTries = 3;
+      ClientAliveInterval = 300;
+      ClientAliveCountMax = 2;
     };
+    extraConfig = ''
+      KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org
+      Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+      MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+    '';
   };
   services.fail2ban.enable = true;
   services.printing.enable = true; # Enable CUPS to print documents.

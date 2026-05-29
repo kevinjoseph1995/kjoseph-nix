@@ -130,6 +130,7 @@
       nil
       zellij
       jujutsu # Source control management tool
+      obs-studio
     ];
     shell = pkgs.fish;
     openssh = {

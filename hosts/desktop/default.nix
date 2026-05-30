@@ -41,4 +41,13 @@
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
+
+  # ===== CUDA Configuration =====
+  # CUDA development happens inside containers (e.g. nvidia/cuda:*-devel images),
+  # which bring their own nvcc/toolkit/libs. The host only needs to expose the
+  # GPU and driver to Docker. This wires up the NVIDIA container runtime so
+  # `docker run --gpus all ...` (or `--device=nvidia.com/gpu=all`) can access the
+  # host GPU; the driver library (libcuda.so) comes from the NVIDIA driver above
+  # at /run/opengl-driver/lib.
+  hardware.nvidia-container-toolkit.enable = true;
 }

@@ -87,6 +87,9 @@
         };
         auto-format = true;
         scroll-lines = 1;
+        lsp = {
+          display-inlay-hints = true;
+        };
       };
       theme = "gruvbox";
     };
@@ -103,6 +106,15 @@
           auto-format = true;
         }
       ];
+      language-server.clangd.config = {
+        InlayHints = {
+          Enabled = true;
+          ParameterNames = true;
+          DeducedTypes = true;
+          Designators = true;
+          BlockEnd = true;
+        };
+      };
       language-server.rust-analyzer.config = {
         inlayHints = {
           bindingModeHints.enable = true;

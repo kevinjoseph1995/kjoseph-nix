@@ -50,4 +50,32 @@
   # host GPU; the driver library (libcuda.so) comes from the NVIDIA driver above
   # at /run/opengl-driver/lib.
   hardware.nvidia-container-toolkit.enable = true;
+
+  # ===== SSH (desktop only) =====
+  # Desktop stays on a known/trusted network, unlike the laptop, so it's the
+  # only host that runs sshd / opens the SSH port.
+  networking.firewall.allowedTCPPorts = [ 1025 ];
+
+  services.openssh = {
+    enable = true; # Enable the OpenSSH daemon.
+    ports = [ 1025 ];
+    settings = {
+      PasswordAuthentication = false;
+      AllowUsers = [ "kevin" ];
+      UseDns = false;
+      X11Forwarding = false;
+      PermitRootLogin = "no";
+      AcceptEnv = [ "COLORTERM" ];
+      LoginGraceTime = 30;
+      MaxAuthTries = 3;
+      ClientAliveInterval = 300;
+      ClientAliveCountMax = 2;
+    };
+    extraConfig = ''
+      KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org
+      Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+      MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+    '';
+  };
+  services.fail2ban.enable = true;
 }

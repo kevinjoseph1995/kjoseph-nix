@@ -31,7 +31,8 @@
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
     # Open ports in the firewall.
-    firewall.allowedTCPPorts = [ 1025 ];
+    # SSH port is opened per-host (see hosts/desktop/default.nix) so the
+    # laptop doesn't run/expose sshd on every network it joins.
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
@@ -171,28 +172,8 @@
   };
 
   # ===== SERVICES =====
-  services.openssh = {
-    enable = true; # Enable the OpenSSH daemon.
-    ports = [ 1025 ];
-    settings = {
-      PasswordAuthentication = false;
-      AllowUsers = [ "kevin" ];
-      UseDns = false;
-      X11Forwarding = false;
-      PermitRootLogin = "no";
-      AcceptEnv = [ "COLORTERM" ];
-      LoginGraceTime = 30;
-      MaxAuthTries = 3;
-      ClientAliveInterval = 300;
-      ClientAliveCountMax = 2;
-    };
-    extraConfig = ''
-      KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org
-      Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
-      MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
-    '';
-  };
-  services.fail2ban.enable = true;
+  # sshd + fail2ban are host-specific now (see hosts/desktop/default.nix) so
+  # the laptop doesn't listen for SSH on every network it joins.
   services.printing.enable = true; # Enable CUPS to print documents.
 
   # ===== NIX CONFIGURATION =====

@@ -133,12 +133,6 @@
 
   programs.fish = {
     enable = true;
-    plugins = [
-      {
-        name = "gruvbox";
-        src = pkgs.fishPlugins.gruvbox.src;
-      }
-    ];
     shellAliases = {
       gs = "git status";
       gpl = "git pull";
@@ -146,6 +140,10 @@
     };
     shellInit = "";
     interactiveShellInit = ''
+      # fish's stock default cwd color (nixpkgs' fish build ships without
+      # fish_config/web themes, so this is never set automatically).
+      set -g fish_color_cwd green
+
       set -g __fish_git_prompt_showdirtystate yes
       set -g __fish_git_prompt_showstashstate yes
       set -g __fish_git_prompt_showuntrackedfiles yes

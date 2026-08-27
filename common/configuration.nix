@@ -175,6 +175,12 @@
   # sshd + fail2ban are host-specific now (see hosts/desktop/default.nix) so
   # the laptop doesn't listen for SSH on every network it joins.
   services.printing.enable = true; # Enable CUPS to print documents.
+  services.tailscale = {
+    enable = true;
+    # Opens the UDP port Tailscale uses for direct peer-to-peer connections;
+    # without it, traffic falls back to relaying through Tailscale's DERP servers.
+    openFirewall = true;
+  };
 
   # ===== NIX CONFIGURATION =====
   nix.settings.experimental-features = [

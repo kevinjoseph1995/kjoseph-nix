@@ -145,6 +145,11 @@
     };
     shellInit = "";
     interactiveShellInit = ''
+      set -g __fish_git_prompt_showdirtystate yes
+      set -g __fish_git_prompt_showstashstate yes
+      set -g __fish_git_prompt_showuntrackedfiles yes
+      set -g __fish_git_prompt_showupstream auto
+
       function fish_jj_prompt
           # If jj isn't installed, there's nothing we can do
           # Return 1 so the calling prompt can deal with it

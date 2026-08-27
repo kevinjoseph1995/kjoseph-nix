@@ -35,6 +35,7 @@
     pkgs.rust-analyzer
     pkgs.rustfmt
     pkgs.claude-code
+    pkgs.zoom-us
   ];
 
   # ===== FILES (DOTFILES) =====

@@ -210,6 +210,10 @@
     enable = true;
     settings = {
       shell-integration-features = "ssh-terminfo,ssh-env";
+      copy-on-select = "clipboard";
+      keybind = [
+        "ctrl+shift+alt+v=paste_from_selection"
+      ];
     };
   };
 

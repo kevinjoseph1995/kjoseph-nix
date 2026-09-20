@@ -37,6 +37,7 @@
     pkgs.claude-code
     pkgs.codex
     pkgs.zoom-us
+    pkgs.vlc
   ];
 
   # ===== FILES (DOTFILES) =====

@@ -120,6 +120,7 @@
       "networkmanager"
       "wheel"
       "docker"
+      "plugdev" # debug probes, also over SSH where uaccess doesn't apply
     ];
     packages = with pkgs; [
       google-chrome
@@ -182,6 +183,12 @@
     # without it, traffic falls back to relaying through Tailscale's DERP servers.
     openFirewall = true;
   };
+  # udev rules from probe-rs: give the logged-in user access to debug probes
+  # (e.g. the micro:bit's CMSIS-DAP) without needing root.
+  services.udev.packages = [ pkgs.probe-rs-tools ];
+  # Those rules set GROUP="plugdev". If the group doesn't exist, udev drops the
+  # whole rule line, including the TAG+="uaccess" that grants access.
+  users.groups.plugdev = { };
 
   # ===== NIX CONFIGURATION =====
   nix.settings.experimental-features = [

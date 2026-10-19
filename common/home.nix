@@ -223,24 +223,6 @@
     enable = true;
     package = pkgs.vscode.fhs;
     profiles.default = {
-      userSettings = {
-        "workbench.colorTheme" = "Default Light Modern";
-        "editor.formatOnSave" = true;
-        "github.copilot.enable" = {
-          "*" = false;
-        };
-        "github.copilot.nextEditSuggestions.enabled" = false;
-        "terminal.integrated.profiles.linux" = {
-          "fish" = {
-            "path" = "fish";
-            "args" = [ ];
-          };
-        };
-        "terminal.integrated.defaultProfile.linux" = "fish";
-        "[cpp]" = {
-          "editor.defaultFormatter" = "llvm-vs-code-extensions.vscode-clangd";
-        };
-      };
       extensions = with pkgs.vscode-extensions; [
         eamodio.gitlens
         github.copilot

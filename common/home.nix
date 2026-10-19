@@ -201,6 +201,19 @@
     };
   };
 
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      syntax-theme = "Dracula";
+      file-style = "omit";
+      hunk-header-style = "file line-number syntax";
+      hunk-header-file-style = "bold blue";
+      hunk-header-line-number-style = "bold yellow";
+      hunk-header-decoration-style = "blue ol";
+    };
+  };
+
   programs.zellij = {
     enable = true;
     settings = {

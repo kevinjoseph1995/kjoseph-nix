@@ -22,6 +22,12 @@
     ];
   };
 
+  # The firmware advertises a TPM2 but the kernel's tpm_tis probe fails, so
+  # /dev/tpm0 never appears and systemd waits out the 90s device timeout in
+  # both the initrd and userspace. We don't use the TPM, so don't wait for it.
+  systemd.tpm2.enable = false;
+  boot.initrd.systemd.tpm2.enable = false;
+
   # Tailscale SSH: tailscaled answers SSH on the tailnet address itself, so no
   # sshd or firewall port is needed on this host.
   services.tailscale.extraSetFlags = [ "--ssh" ];

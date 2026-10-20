@@ -22,7 +22,28 @@
     ];
   };
 
-  environment.systemPackages = [ pkgs.rclone ];
+  environment.systemPackages = [
+    pkgs.rclone
+    pkgs.brightnessctl
+  ];
+
+  # Keep running with the lid closed; just turn the backlight off.
+  services.logind.settings.Login = {
+    HandleLidSwitch = "ignore";
+    HandleLidSwitchExternalPower = "ignore";
+    HandleLidSwitchDocked = "ignore";
+  };
+
+  services.acpid = {
+    enable = true;
+    lidEventCommands = ''
+      if grep -q closed /proc/acpi/button/lid/*/state; then
+        ${pkgs.brightnessctl}/bin/brightnessctl --save set 0
+      else
+        ${pkgs.brightnessctl}/bin/brightnessctl --restore
+      fi
+    '';
+  };
 
   # Daily one-way mirror of Google Drive onto the T7.
   # Requires a one-time `rclone config` creating a remote named "gdrive".

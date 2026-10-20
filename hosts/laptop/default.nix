@@ -22,6 +22,10 @@
     ];
   };
 
+  # Tailscale SSH: tailscaled answers SSH on the tailnet address itself, so no
+  # sshd or firewall port is needed on this host.
+  services.tailscale.extraSetFlags = [ "--ssh" ];
+
   environment.systemPackages = [
     pkgs.rclone
     pkgs.brightnessctl

@@ -190,6 +190,40 @@
   # whole rule line, including the TAG+="uaccess" that grants access.
   users.groups.plugdev = { };
 
+  # ---------------------------------------------------------------------------
+  # Baloo: stop baloo_file_extractor from crash-looping at login
+  # ---------------------------------------------------------------------------
+  # Symptom: a flood of "baloo_file_extractor crashed" drkonqi notifications
+  # (and coredumps, SIGABRT) shortly after logging in to Plasma.
+  #
+  # Cause: kde-baloo.service (the indexer daemon, `baloo_file`) is started by
+  # systemd's user manager early in the session, and it can win a race against
+  # the session importing DISPLAY / WAYLAND_DISPLAY / XAUTHORITY into the user
+  # manager's environment. When that happens the service runs with NO display
+  # variables at all. `baloo_file` itself doesn't care, but it spawns
+  # `baloo_file_extractor` in batches, and the extractor constructs a
+  # QGuiApplication. Qt then tries the "xcb" and "wayland" platform plugins,
+  # both fail ("could not connect to display" / "Failed to create wl_display"),
+  # and Qt calls qFatal() -> abort(). baloo_file respawns the extractor
+  # immediately, so it crashes dozens of times within seconds. The index itself
+  # is fine; it just never makes progress on content extraction.
+  #
+  # Diagnosis (for the next person): `journalctl --user -u kde-baloo` shows the
+  # platform plugin errors, and /proc/<MainPID of kde-baloo>/environ lacks
+  # WAYLAND_DISPLAY / DISPLAY. `systemctl --user restart kde-baloo` fixes it
+  # until the next unlucky login, which is why this needs a real fix.
+  #
+  # Fix: force Qt's "offscreen" platform plugin for this service. The extractor
+  # never shows any UI (it only reads files and writes the index), so it has no
+  # need for a real display, and "offscreen" initialises without one. This
+  # makes the service independent of the login race entirely, and is safe even
+  # when the display variables *are* present.
+  #
+  # Remove this if upstream KDE/nixpkgs makes baloo_file_extractor use
+  # QCoreApplication (or otherwise stops requiring a display), or if the
+  # session environment import is ordered before the user service starts.
+  systemd.user.services.kde-baloo.environment.QT_QPA_PLATFORM = "offscreen";
+
   # ===== NIX CONFIGURATION =====
   nix.settings.experimental-features = [
     "nix-command"

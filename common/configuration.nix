@@ -74,10 +74,6 @@
 
   services.displayManager = {
     sddm.enable = true; # Enable the KDE Plasma Display Manager
-    autoLogin = {
-      enable = true;
-      user = "kevin";
-    };
   };
   services.desktopManager.plasma6.enable = true;
 

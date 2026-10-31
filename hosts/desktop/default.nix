@@ -78,4 +78,18 @@
     '';
   };
   services.fail2ban.enable = true;
+
+  # ===== NFS share from laptop =====
+  # Served over Tailscale by hosts/laptop/default.nix.
+  fileSystems."/mnt/laptop" = {
+    device = "kevin-xps:/mnt/t7/nfsv4_shared";
+    fsType = "nfs";
+    options = [
+      "nfsvers=4.2"
+      "x-systemd.automount" # mount on first access
+      "noauto" # don't block boot if the laptop is off
+      "x-systemd.idle-timeout=600"
+      "_netdev"
+    ];
+  };
 }

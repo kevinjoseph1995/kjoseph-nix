@@ -22,6 +22,18 @@
     ];
   };
 
+  # NFSv4 share for any tailnet device. Tailscale handles encryption/auth, so
+  # only the tailnet range (100.64.0.0/10) is allowed and 2049 is opened on tailscale0 only.
+  # mp=/mnt/t7: export only while the T7 is mounted, never the bare mountpoint.
+  services.nfs.server = {
+    enable = true;
+    exports = ''
+      /mnt/t7/nfsv4_shared  100.64.0.0/10(rw,sync,no_subtree_check,mp=/mnt/t7)
+    '';
+  };
+  systemd.services.nfs-server.after = [ "mnt-t7.mount" ];
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 2049 ];
+
   # The firmware advertises a TPM2 but the kernel's tpm_tis probe fails, so
   # /dev/tpm0 never appears and systemd waits out the 90s device timeout in
   # both the initrd and userspace. We don't use the TPM, so don't wait for it.

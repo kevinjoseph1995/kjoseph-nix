@@ -38,6 +38,7 @@
     pkgs.codex
     pkgs.zoom-us
     pkgs.vlc
+    pkgs.obsidian
   ];
 
   # ===== FILES (DOTFILES) =====

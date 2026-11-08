@@ -44,6 +44,14 @@
   # sshd or firewall port is needed on this host.
   services.tailscale.extraSetFlags = [ "--ssh" ];
 
+  # Runs bluetoothd (BlueZ). Without it, Plasma hides the Bluetooth settings
+  # page entirely. PipeWire picks up Bluetooth audio devices automatically.
+  # (The desktop has no Bluetooth adapter, so this lives here, not in common.)
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
   environment.systemPackages = [
     pkgs.rclone
     pkgs.brightnessctl
